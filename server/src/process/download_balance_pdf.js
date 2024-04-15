@@ -10,7 +10,7 @@ async function extractionMaazanPdfSapirColleg(username, password) {
   const downloadPath = path.resolve(__dirname, "downloads_balance");
 
   let options = new Options();
-  //options.addArguments("--headless");
+  options.addArguments("--headless");
   options.setUserPreferences({
     "download.default_directory": downloadPath,
     "download.prompt_for_download": false,
