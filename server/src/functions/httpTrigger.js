@@ -5,6 +5,6 @@ app.http("httpTrigger", {
   authLevel: "anonymous",
   handler: async (request, context) => {
     const text = extraction_balance_pdf();
-    return text;
+    return { body: `Hello, ${text}!` };
   },
 });
