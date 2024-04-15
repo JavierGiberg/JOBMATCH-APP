@@ -11,7 +11,8 @@
     "dotenv": "^16.4.5",
     "mysql": "^2.18.1",
     "pdf-parse": "^1.1.1",
-    "selenium": "^2.20.0"
+    "selenium": "^2.20.0",
+    "url": "^0.11.3"
   },
   "main": "server/src/functions/*.js"
 }
