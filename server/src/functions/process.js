@@ -8,21 +8,13 @@ app.http("process", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
   handler: async (request, context) => {
-    const textIn = request.query.get("pdfPath");
+    const username = request.query.get("username");
+    const password = request.query.get("password");
 
-    if (!textIn) {
-      context.res = {
-        status: 400,
-        body: "PDF path is required",
-      };
-      return;
-    }
-
-    const pdfPath = await extractionMaazanPdfSapirColleg(
-      "Jango117",
-      "aviG2445"
+    //const pdfPath = await extractionMaazanPdfSapirColleg(username, password);
+    const object = await extraction_balance_pdf(
+      "downloads_balance/Jango117grades.pdf"
     );
-    const object = await extraction_balance_pdf(pdfPath);
 
     if (object) {
       return (context.res = {

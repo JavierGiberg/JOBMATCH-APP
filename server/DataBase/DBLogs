@@ -22,6 +22,6 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 student_id VARCHAR(10),
 course_name VARCHAR(100),
 grade VARCHAR(50),
-FOREIGN KEY (student_id) REFERENCES Students(id)
+FOREIGN KEY (student_id) REFERENCES t_student(id)
 );
 ######################################################################
