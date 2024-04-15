@@ -1,5 +1,5 @@
 const { app } = require("@azure/functions");
-const extraction_balance_pdf = require("../process/extraction_balance_pdf");
+const { extraction_balance_pdf } = require("../process/extraction_balance_pdf");
 app.http("httpTrigger", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
