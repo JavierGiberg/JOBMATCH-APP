@@ -10,5 +10,5 @@
     "@azure/functions": "^4.0.0",
     "node": "^18.20.2"
   },
-  "main": "server/src/functions/*.js"
+  "main": "src/functions/*.js"
 }
