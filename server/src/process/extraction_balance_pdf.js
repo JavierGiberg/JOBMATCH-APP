@@ -7,7 +7,7 @@ const extraction_balance_pdf = async (pdfPath) => {
   const data = await pdf(dataBuffer);
 
   const lines = data.text.split("\n").filter((line) => line.trim() !== "");
-  console.log(lines);
+
   const studentInfo = {
     id: lines[8],
     name: lines[9],
@@ -36,7 +36,7 @@ const extraction_balance_pdf = async (pdfPath) => {
       courses.push(course);
     }
   });
-  // saveDataToDB.saveDataToDB(studentInfo, courses);
+  saveDataToDB.saveDataToDB(studentInfo, courses);
   return { studentInfo, courses };
 };
 

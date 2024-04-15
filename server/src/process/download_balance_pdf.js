@@ -49,6 +49,10 @@ async function extractionMaazanPdfSapirColleg(username, password) {
     );
     await driver.sleep(5000);
     await btnLoginpass.click();
+    await driver.takeScreenshot().then((data) => {
+      // takeScreenshot
+      fs.writeFileSync("screenshot.png", data, "base64");
+    });
 
     await driver.sleep(5000);
 

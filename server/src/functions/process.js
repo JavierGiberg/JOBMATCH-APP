@@ -1,14 +1,16 @@
 const { app } = require("@azure/functions");
 const { extraction_balance_pdf } = require("../process/extraction_balance_pdf");
-const url = require("url");
+const {
+  extractionMaazanPdfSapirColleg,
+} = require("../process/download_balance_pdf");
 
 app.http("process", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
   handler: async (request, context) => {
-    const pdfPath = request.query.get("pdfPath");
+    const textIn = request.query.get("pdfPath");
 
-    if (!pdfPath) {
+    if (!textIn) {
       context.res = {
         status: 400,
         body: "PDF path is required",
@@ -16,11 +18,21 @@ app.http("process", {
       return;
     }
 
+    const pdfPath = await extractionMaazanPdfSapirColleg(
+      "Jango117",
+      "aviG2445"
+    );
     const object = await extraction_balance_pdf(pdfPath);
-    console.log("Object:", object);
-    context.res = {
-      status: 200,
-      body: object,
-    };
+
+    if (object) {
+      return (context.res = {
+        body: JSON.stringify(object),
+      });
+    } else {
+      context.res = {
+        status: 404,
+        body: "PDF not found",
+      };
+    }
   },
 });
