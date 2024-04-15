@@ -1,0 +1,27 @@
+# DataBase Note
+
+
+######################### 04/10/2024 Javier ##########################
+
+// create two first table for student data //
+
+CREATE TABLE t_student (
+id VARCHAR(10) PRIMARY KEY,
+name VARCHAR(100),
+address VARCHAR(255),
+phone VARCHAR(20),
+email VARCHAR(100),
+major VARCHAR(50),
+status VARCHAR(50),
+degree VARCHAR(50),
+english VARCHAR(50)
+);
+
+CREATE TABLE t_courses (
+id INT AUTO_INCREMENT PRIMARY KEY,
+student_id VARCHAR(10),
+course_name VARCHAR(100),
+grade VARCHAR(50),
+FOREIGN KEY (student_id) REFERENCES Students(id)
+);
+######################################################################
