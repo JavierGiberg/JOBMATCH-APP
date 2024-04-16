@@ -1,8 +1,9 @@
 const { app } = require("@azure/functions");
+
 const { extraction_balance_pdf } = require("../process/extraction_balance_pdf");
-const {
-  extractionMaazanPdfSapirColleg,
-} = require("../process/download_balance_pdf");
+// const {
+//   extractionMaazanPdfSapirColleg,
+// } = require("../process/download_balance_pdf");
 
 app.http("process", {
   methods: ["GET", "POST"],
