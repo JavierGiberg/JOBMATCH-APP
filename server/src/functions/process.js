@@ -9,13 +9,12 @@ app.http("process", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
   handler: async (request, context) => {
-    const username = request.query.get("username");
-    const password = request.query.get("password");
+    // const username = request.query.get("username");
+    // const password = request.query.get("password");
+    const pdfPath = request.query.get("pdfPath");
 
     //const pdfPath = await extractionMaazanPdfSapirColleg(username, password);
-    const object = await extraction_balance_pdf(
-      "downloads_balance/Jango117grades.pdf"
-    );
+    const object = await extraction_balance_pdf(pdfPath);
 
     if (object) {
       return (context.res = {
