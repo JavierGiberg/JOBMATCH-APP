@@ -1,6 +1,6 @@
 const Database = require("../../DataBase/DBConnection");
 
-const saveDataToDB = async (studentInfo, courses) => {
+const pushAcademicDataToSQL = async (studentInfo, courses) => {
   const dbConnection = Database.getInstance();
 
   const studentQuery = `
@@ -43,6 +43,7 @@ const saveDataToDB = async (studentInfo, courses) => {
       course.grade,
     ]);
   });
+  dbConnection.end();
 };
 
-module.exports = { saveDataToDB };
+module.exports = { pushAcademicDataToSQL };

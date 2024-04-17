@@ -24,4 +24,22 @@ course_name VARCHAR(100),
 grade VARCHAR(50),
 FOREIGN KEY (student_id) REFERENCES t_student(id)
 );
-######################################################################
+######################### 04/17/2024 Javier ##########################
+
+CREATE TABLE t_github_info (
+    id VARCHAR(10) PRIMARY KEY,
+    name VARCHAR(100),
+    avatar_url VARCHAR(255),
+    followers INT,
+    following INT,
+    public_repos INT,
+    FOREIGN KEY (id) REFERENCES t_student(id)
+);
+
+CREATE TABLE t_github_languages (
+    student_id VARCHAR(10),
+    language VARCHAR(50),
+    projects_count INT,
+    FOREIGN KEY (student_id) REFERENCES t_student(id)
+);
+

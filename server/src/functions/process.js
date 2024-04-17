@@ -1,9 +1,6 @@
 const { app } = require("@azure/functions");
 
-const { extraction_balance_pdf } = require("../process/extraction_balance_pdf");
-// const {
-//   extractionMaazanPdfSapirColleg,
-// } = require("../process/download_balance_pdf");
+const { mainProcess } = require("../process/mainProcess");
 
 app.http("process", {
   methods: ["GET", "POST"],
@@ -11,14 +8,13 @@ app.http("process", {
   handler: async (request, context) => {
     // const username = request.query.get("username");
     // const password = request.query.get("password");
-    const pdfPath = request.query.get("pdfPath");
+    //const pdfPath = request.query.get("pdfPath");
 
-    //const pdfPath = await extractionMaazanPdfSapirColleg(username, password);
-    const object = await extraction_balance_pdf(pdfPath);
+    const result = await mainProcess();
 
-    if (object) {
+    if (result) {
       return (context.res = {
-        body: JSON.stringify(object),
+        body: result,
       });
     } else {
       context.res = {
