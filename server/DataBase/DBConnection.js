@@ -1,5 +1,7 @@
 const mysql = require("mysql");
 const fs = require("fs");
+const path = require("path");
+const certPath = path.join(__dirname, "/DigiCertGlobalRootCA.crt.pem");
 
 require("dotenv").config({
   path: require("path").join(__dirname, "../../.env"),
@@ -23,9 +25,7 @@ const connection = mysql.createConnection({
   database: process.env.PRODUCT_DB_NAME,
   port: 3306,
   ssl: {
-    ca: fs.readFileSync(
-      "C:\\web\\JOBMATCH APP\\server\\DataBase\\DigiCertGlobalRootCA.crt.pem"
-    ),
+    ca: fs.readFileSync(certPath),
   },
 });
 
