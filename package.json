@@ -9,6 +9,7 @@
   "dependencies": {
     "@azure/functions": "^4.0.0",
     "@azure/storage-blob": "^12.17.0",
+    "axios": "^1.6.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

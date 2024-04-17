@@ -1,13 +1,12 @@
 const { Builder, By, Key, until } = require("selenium-webdriver");
 const { Options } = require("selenium-webdriver/chrome");
-//const { BlobServiceClient } = require("@azure/storage-blob");
 const path = require("path");
 const fs = require("fs");
 require("dotenv").config({
   path: require("path").join(__dirname, "./.env"),
 });
 
-async function extractionMaazanPdfSapirColleg(username, password) {
+async function scrapePdfSapirColleg(username, password) {
   var web = // Limud Aera
     "https://ids.sapir.ac.il/nidp/idff/sso?id=sapirloa2&sid=9&option=credential&sid=9&target=https%3A%2F%2Fis.sapir.ac.il%2Fportal%2F";
 
@@ -104,22 +103,4 @@ async function extractionMaazanPdfSapirColleg(username, password) {
     return newFilePath;
   }
 }
-module.exports = { extractionMaazanPdfSapirColleg };
-
-// async function saveScreenshotToAzure(fileName, takeScreenshot) {
-//   // Create a blob service client
-//   const blobServiceClient = BlobServiceClient.fromConnectionString(
-//     process.env.CN_STRING_BLOB
-//   );
-
-//   // Get a reference to a container
-//   const containerClient = blobServiceClient.getContainerClient("gradespdf");
-
-//   // Get a block blob client
-//   const blockBlobClient = containerClient.getBlockBlobClient("screenshot.png");
-
-//   // Upload the screenshot
-//   await blockBlobClient.upload(takeScreenshot, takeScreenshot.length);
-
-//   console.log("Screenshot uploaded to Azure Storage");
-// }
+module.exports = { scrapePdfSapirColleg };

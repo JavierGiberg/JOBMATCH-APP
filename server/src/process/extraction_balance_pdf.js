@@ -1,7 +1,8 @@
 const fs = require("fs");
 const pdf = require("pdf-parse");
 const path = require("path");
-const saveDataToDB = require("./savePdfToDB");
+const { pushAcademicDataToSQL } = require("./pushAcademicDataToSQL");
+
 const extraction_balance_pdf = async (pdfPath) => {
   const dataBuffer = fs.readFileSync(pdfPath);
   const data = await pdf(dataBuffer);
@@ -36,7 +37,7 @@ const extraction_balance_pdf = async (pdfPath) => {
       courses.push(course);
     }
   });
-  saveDataToDB.saveDataToDB(studentInfo, courses);
+  pushAcademicDataToSQL(studentInfo, courses);
   return { studentInfo, courses };
 };
 
@@ -54,9 +55,5 @@ const extractGrade = (current) => {
     return handleGrade[1].substring(2, 5);
   }
 };
-
-//debugger
-// const pdfPath = path.join(__dirname, "downloads_balance/Jango117grades.pdf");
-// extraction_balance_pdf(pdfPath);
 
 module.exports = { extraction_balance_pdf };
