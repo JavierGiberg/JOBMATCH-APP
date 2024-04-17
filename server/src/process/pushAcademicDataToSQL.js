@@ -29,20 +29,19 @@ const pushAcademicDataToSQL = async (studentInfo, courses) => {
     studentInfo.english,
   ]);
 
-  courses.forEach(async (course) => {
-    const courseQuery = `
-        INSERT INTO t_courses (student_id, course_name, grade)
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-          grade = VALUES(grade);
-      `;
-
+  const courseQuery = `
+      INSERT INTO t_courses (student_id, course_name, grade)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        grade = VALUES(grade);
+    `;
+  for (const course of courses) {
     await dbConnection.query(courseQuery, [
       studentInfo.id,
       course.course,
       course.grade,
     ]);
-  });
+  }
   dbConnection.end();
 };
 

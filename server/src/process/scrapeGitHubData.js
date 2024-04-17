@@ -23,7 +23,7 @@ async function scrapeGitHubData(userId, username) {
 
     const userInfo = {
       id: userId,
-      name: user.name,
+      name: user.login,
       avatar_url: user.avatar_url,
       followers: user.followers,
       following: user.following,
