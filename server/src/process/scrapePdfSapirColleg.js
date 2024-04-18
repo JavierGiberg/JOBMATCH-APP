@@ -30,43 +30,36 @@ async function scrapePdfSapirColleg(username, password) {
     await driver.get(web);
     let inputUsername = await driver.findElement(By.id("Ecom_User_ID"));
     await inputUsername.sendKeys(username);
+    console.log("web in : Ecom_User_ID");
     await driver.sleep(10000);
-    // await driver.takeScreenshot().then((data) => {
-    //   // takeScreenshot
-    //   saveScreenshotToAzure("screenshot.png", data);
-    // });
 
     let btnLogin = await driver.findElement(By.id("loginButton"));
     await btnLogin.click();
+    console.log("web in : loginButton");
     await driver.sleep(10000);
 
-    // await driver.takeScreenshot().then((data) => {
-    //   // takeScreenshot
-    //   saveScreenshotToAzure("screenshot1.png", data);
-    // });
     // Locate the password input field and set attribute values
     let btnLoginpass = await driver.findElement(By.id("ldapPasswordCard"));
     await driver.executeScript(
       "arguments[0].setAttribute('enabled', 'true'); arguments[0].setAttribute('active', 'true');",
       btnLoginpass
     );
+    console.log("web in : ldapPasswordCard");
     await driver.sleep(10000);
     await btnLoginpass.click();
-    // await driver.takeScreenshot().then((data) => {
-    //   // takeScreenshot
-    //   saveScreenshotToAzure("screenshot2.png", data);
-    // });
 
     await driver.sleep(10000);
 
     // Enter password
     let inputPassword = await driver.findElement(By.id("ldapPassword"));
     await inputPassword.sendKeys(password);
+    console.log("web in : ldapPassword");
     await driver.sleep(10000);
 
     // Click the login button
     btnLogin = await driver.findElement(By.id("ldapPasswordLoginButton"));
     await btnLogin.click();
+    console.log("web in : ldapPasswordLoginButton");
     await driver.sleep(10000);
 
     // Navigate to the private zone
@@ -74,6 +67,7 @@ async function scrapePdfSapirColleg(username, password) {
       By.xpath('//a[@title="רישום לקורסים, מערכת שעות, ציונים, הגשת בקשות"]')
     );
     await privateZone.click();
+    console.log("web in : privateZone");
     await driver.sleep(10000);
 
     // Navigate to the maazan section
@@ -81,6 +75,7 @@ async function scrapePdfSapirColleg(username, password) {
       By.xpath('//r-button[@routerlink="grades"]')
     );
     await maazanBtn.click();
+    console.log("web in : grades");
     await driver.sleep(10000);
 
     // Download PDF
@@ -90,9 +85,11 @@ async function scrapePdfSapirColleg(username, password) {
       )
     );
     await downloadPdf.click();
+    console.log("web in : downloadPdf");
     await driver.sleep(10000);
   } finally {
     await driver.quit();
+    console.log("web in : quit");
     const originalFilename = "הציונים+שלי+-+גליון+ציונים.pdf";
     const originalFilePath = path.join(downloadPath, originalFilename);
     const newFilePath = path.join(downloadPath, username + "grades.pdf");
@@ -100,6 +97,7 @@ async function scrapePdfSapirColleg(username, password) {
       await new Promise((resolve) => setTimeout(resolve, 10000));
     }
     fs.renameSync(originalFilePath, newFilePath);
+    console.log("web in : newFilePath");
     return newFilePath;
   }
 }
