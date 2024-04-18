@@ -30,7 +30,7 @@ async function scrapePdfSapirColleg(username, password) {
     await driver.get(web);
     let inputUsername = await driver.findElement(By.id("Ecom_User_ID"));
     await inputUsername.sendKeys(username);
-    await driver.sleep(5000);
+    await driver.sleep(10000);
     // await driver.takeScreenshot().then((data) => {
     //   // takeScreenshot
     //   saveScreenshotToAzure("screenshot.png", data);
@@ -50,38 +50,38 @@ async function scrapePdfSapirColleg(username, password) {
       "arguments[0].setAttribute('enabled', 'true'); arguments[0].setAttribute('active', 'true');",
       btnLoginpass
     );
-    await driver.sleep(1000);
+    await driver.sleep(10000);
     await btnLoginpass.click();
     // await driver.takeScreenshot().then((data) => {
     //   // takeScreenshot
     //   saveScreenshotToAzure("screenshot2.png", data);
     // });
 
-    await driver.sleep(1000);
+    await driver.sleep(10000);
 
     // Enter password
     let inputPassword = await driver.findElement(By.id("ldapPassword"));
     await inputPassword.sendKeys(password);
-    await driver.sleep(1000);
+    await driver.sleep(10000);
 
     // Click the login button
     btnLogin = await driver.findElement(By.id("ldapPasswordLoginButton"));
     await btnLogin.click();
-    await driver.sleep(1000);
+    await driver.sleep(10000);
 
     // Navigate to the private zone
     let privateZone = await driver.findElement(
       By.xpath('//a[@title="רישום לקורסים, מערכת שעות, ציונים, הגשת בקשות"]')
     );
     await privateZone.click();
-    await driver.sleep(1000);
+    await driver.sleep(10000);
 
     // Navigate to the maazan section
     let maazanBtn = await driver.findElement(
       By.xpath('//r-button[@routerlink="grades"]')
     );
     await maazanBtn.click();
-    await driver.sleep(1000);
+    await driver.sleep(10000);
 
     // Download PDF
     let downloadPdf = await driver.findElement(
@@ -97,7 +97,7 @@ async function scrapePdfSapirColleg(username, password) {
     const originalFilePath = path.join(downloadPath, originalFilename);
     const newFilePath = path.join(downloadPath, username + "grades.pdf");
     while (!fs.existsSync(originalFilePath)) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
     }
     fs.renameSync(originalFilePath, newFilePath);
     return newFilePath;

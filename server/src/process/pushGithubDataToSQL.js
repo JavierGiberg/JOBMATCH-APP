@@ -1,5 +1,3 @@
-const mysql = require("mysql");
-const axios = require("axios");
 const Database = require("../../DataBase/DBConnection");
 
 async function pushGithubDataToSQL(userInfo, summary) {

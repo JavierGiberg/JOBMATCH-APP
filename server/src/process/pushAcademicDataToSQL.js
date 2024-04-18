@@ -42,6 +42,7 @@ const pushAcademicDataToSQL = async (studentInfo, courses) => {
       course.grade,
     ]);
   }
+  await driver.sleep(10000);
   dbConnection.end();
 };
 

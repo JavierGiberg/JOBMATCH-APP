@@ -1,6 +1,5 @@
 const fs = require("fs");
 const pdf = require("pdf-parse");
-const path = require("path");
 const { pushAcademicDataToSQL } = require("./pushAcademicDataToSQL");
 
 const extraction_balance_pdf = async (pdfPath) => {
