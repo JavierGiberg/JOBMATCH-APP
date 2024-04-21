@@ -6,6 +6,7 @@ const extraction_balance_pdf = async (pdfPath) => {
   const dataBuffer = fs.readFileSync(pdfPath);
   const data = await pdf(dataBuffer);
 
+  console.log("start extraction studentInfo");
   const lines = data.text.split("\n").filter((line) => line.trim() !== "");
 
   const studentInfo = {
@@ -19,12 +20,11 @@ const extraction_balance_pdf = async (pdfPath) => {
     degree: lines[19],
     english: lines[7],
   };
-
+  console.log("start extraction coursesLines");
   const coursesLines = data.text
     .split("שיעור")
     .filter((line) => line.trim() !== "");
   const courses = [];
-
   coursesLines.forEach((element, index) => {
     if (index != 0) {
       const current = element.split("\n").filter((line) => line.trim() !== "");
@@ -37,6 +37,14 @@ const extraction_balance_pdf = async (pdfPath) => {
     }
   });
   pushAcademicDataToSQL(studentInfo, courses);
+  console.log("push Academic Data To SQL DONE!");
+  try {
+    fs.unlinkSync(pdfPath);
+    console.log(pdfPath + " as deleted");
+  } catch (err) {
+    console.error(err);
+  }
+  console.log("extraction_balance_pdf DONE!");
   return { studentInfo, courses };
 };
 
