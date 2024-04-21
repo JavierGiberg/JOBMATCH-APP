@@ -9,6 +9,7 @@
   "dependencies": {
     "@azure/functions": "^4.0.0",
     "@azure/storage-blob": "^12.17.0",
+    "@infosimples/node_two_captcha": "^1.2.0",
     "axios": "^1.6.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -17,8 +18,9 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.9.5",
     "pdf-parse": "^1.1.1",
-    "selenium": "^2.20.0",
-    "selenium-webdriver": "^4.19.0"
+    "puppeteer": "^22.6.5",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-recaptcha": "^3.6.8"
   },
   "main": "server/src/functions/*.js"
 }
