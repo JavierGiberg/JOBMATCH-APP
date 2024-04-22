@@ -20,7 +20,7 @@ puppeteer.use(
 async function scrapePdfSapirCollege(username, password) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--window-size=1920,1080"],
+    args: ["--window-size=1920,1080", "--no-sandbox"],
   });
 
   const page = await browser.newPage();
