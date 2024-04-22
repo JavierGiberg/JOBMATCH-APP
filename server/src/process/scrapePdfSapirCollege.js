@@ -3,7 +3,7 @@ const fs = require("fs");
 require("dotenv").config({
   path: require("path").join(__dirname, "./.env"),
 });
-const { Page } = require("puppeteer");
+const { Page } = require("puppeteer-core");
 const puppeteer = require("puppeteer-extra");
 const RecaptchaPlugin = require("puppeteer-extra-plugin-recaptcha");
 
