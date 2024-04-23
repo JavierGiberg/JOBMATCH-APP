@@ -2,6 +2,7 @@ const axios = require("axios");
 const { pushGithubDataToSQL } = require("./pushGithubDataToSQL");
 
 async function scrapeGitHubData(userId, username) {
+  console.log("scrapeGitHubData START!");
   const config = {
     headers: {
       Authorization: `token ${process.env.GITHUB_TOKEN_API}`,
@@ -17,6 +18,7 @@ async function scrapeGitHubData(userId, username) {
       `https://api.github.com/users/${username}/repos`,
       config
     );
+    console.log("get data from GitHub API DONE!");
 
     const user = userResponse.data;
     const repos = userReposResponse.data;
@@ -31,8 +33,9 @@ async function scrapeGitHubData(userId, username) {
     };
 
     const summary = await summarizeLanguages(repos, config);
-
+    console.log("build Objects DONE!");
     await pushGithubDataToSQL(userInfo, summary);
+    console.log("pushGithubDataToSQL DONE!");
     return { userInfo, summary };
   } catch (error) {
     console.error("Error in scraping GitHub Data:", error);

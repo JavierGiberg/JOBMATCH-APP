@@ -23,14 +23,18 @@ async function mainProcess(
   const nameOfFile = "server\\src\\downloads_balance\\" + "Jango117grades.pdf"; // path.basename(PdfFilefullPath);
   const { studentInfo, courses } = await extraction_balance_pdf(nameOfFile);
 
-  // Generate random id for testing
+  //// Generate random id for testing
   // let id = "";
   // for (const i = 0; i < 10; i++) {
   //   const digit = Math.floor(Math.random() * 10);
   //   id += digit.toString();
   // }
-  // const { useInfo, summary } = await scrapeGitHubData(id, usernameGitHub);
+  console.log("module 3 START!");
+  const { useInfo, summary } = await scrapeGitHubData(
+    studentInfo.id,
+    usernameGitHub
+  );
 
-  return "done handling " + nameOfFile;
+  return "done handling main process";
 }
 module.exports = { mainProcess };

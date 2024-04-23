@@ -1,9 +1,9 @@
 const Database = require("../../DataBase/DBConnection");
 
 const pushAcademicDataToSQL = async (studentInfo, courses) => {
-  const dbConnection = Database.getInstance();
-
-  const studentQuery = `
+  try {
+    const dbConnection = Database.getInstance();
+    const studentQuery = `
       INSERT INTO t_student (id, name, address, phone, email, major, status, degree, english)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
@@ -17,32 +17,33 @@ const pushAcademicDataToSQL = async (studentInfo, courses) => {
         english = VALUES(english);
     `;
 
-  await dbConnection.query(studentQuery, [
-    studentInfo.id,
-    studentInfo.name,
-    studentInfo.address,
-    studentInfo.phone,
-    studentInfo.email,
-    studentInfo.major,
-    studentInfo.status,
-    studentInfo.degree,
-    studentInfo.english,
-  ]);
-
-  const courseQuery = `
-      INSERT INTO t_courses (student_id, course_name, grade)
-      VALUES (?, ?, ?)
-      ON DUPLICATE KEY UPDATE
-        grade = VALUES(grade);
-    `;
-  for (const course of courses) {
-    await dbConnection.query(courseQuery, [
+    await dbConnection.query(studentQuery, [
       studentInfo.id,
-      course.course,
-      course.grade,
+      studentInfo.name,
+      studentInfo.address,
+      studentInfo.phone,
+      studentInfo.email,
+      studentInfo.major,
+      studentInfo.status,
+      studentInfo.degree,
+      studentInfo.english,
     ]);
+    const courseQuery = `
+        INSERT INTO t_courses (student_id, course_name, grade)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          grade = VALUES(grade);
+      `;
+    for (const course of courses) {
+      await dbConnection.query(courseQuery, [
+        studentInfo.id,
+        course.course,
+        course.grade,
+      ]);
+    }
+  } catch (error) {
+    console.log("error in pushAcademicDataToSQL: DUPLICATE");
   }
-  dbConnection.end();
 };
 
 module.exports = { pushAcademicDataToSQL };
