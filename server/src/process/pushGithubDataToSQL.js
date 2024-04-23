@@ -24,9 +24,6 @@ async function pushGithubDataToSQL(userInfo, summary) {
     ]);
 
     for (const [language, count] of Object.entries(summary.languages)) {
-      console.log(
-        `userInfo.id: ${userInfo.id}, Language: ${language}, Count: ${count}`
-      );
       const sqlSummary = `
                 INSERT INTO t_github_languages (student_id, language, projects_count)
                 VALUES (?, ?, ?)
@@ -40,7 +37,7 @@ async function pushGithubDataToSQL(userInfo, summary) {
   } catch (error) {
     console.error("Failed to insert data:", error);
   } finally {
-    dbConnection.end(); // Consider connection pooling for better performance in production
+    dbConnection.end(); // Close the connection for process Module!!!
   }
 }
 

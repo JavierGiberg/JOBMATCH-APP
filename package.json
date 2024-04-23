@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "func start",
+    "start": "node server/src/functions/server.js",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
