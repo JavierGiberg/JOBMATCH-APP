@@ -99,5 +99,5 @@ __queuestorage__
 __azurite_db*__.json
 
 # sapir college scraping
-scrapePdfSapirCollege.js
-pnpm-lock.yaml
+# scrapePdfSapirCollege.js
+# pnpm-lock.yaml
