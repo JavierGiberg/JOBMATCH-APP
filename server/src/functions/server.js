@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "web", "build", "index.html"));
 });
 
-app.get("/process", async (req, res) => {
+app.get("/api/process", async (req, res) => {
   //   res.send("Hello, Azure VM!");
   const username = req.query.username;
   const password = req.query.password;
@@ -31,11 +31,11 @@ app.get("/process", async (req, res) => {
   res.send(`result is: ${result}`);
 });
 
-// app.get("/", async (req, res) => {
+// app.get("/api/", async (req, res) => {
 //   res.send("Hello, Azure VM!");
 // });
 
-app.post("/api/register", async (req, res) => {
+app.get("/api/register", async (req, res) => {
   res.send(
     "This should be registration page, should get all details from req, return them as res with the id that was saved in the database."
   );
