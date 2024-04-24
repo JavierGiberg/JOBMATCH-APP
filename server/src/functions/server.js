@@ -8,10 +8,6 @@ app.use(cors());
 
 app.use(express.static("web/build"));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "web", "build", "index.html"));
-});
-
 app.get("/api/process", async (req, res) => {
   //   res.send("Hello, Azure VM!");
   const username = req.query.username;
@@ -51,6 +47,9 @@ app.get("/api/login", async (req, res) => {
   );
 });
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "web", "build", "index.html"));
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

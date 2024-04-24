@@ -6,7 +6,6 @@ const certPath = path.join(__dirname, "/DigiCertGlobalRootCA.crt.pem");
 require("dotenv").config({
   path: require("path").join(__dirname, "../../.env"),
 });
-console.log(process.env.LOCAL_DB_HOST);
 let instance = null;
 //Local DB
 // const connection = mysql.createConnection({
