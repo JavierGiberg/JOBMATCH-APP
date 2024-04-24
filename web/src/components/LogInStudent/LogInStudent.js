@@ -21,7 +21,7 @@ const LogInStudent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch(
-      `http://localhost:8000/login?username=${username}&password=${password}&gitgubUsername=${githubUsername}`
+      `http://localhost:8000/api/login?username=${username}&password=${password}&gitgubUsername=${githubUsername}`
     )
       .then((res) => res.text())
       .then((data) => {
