@@ -6,23 +6,19 @@ const port = process.env.PORT || 3000;
 
 // Define your routes here
 app.get("/", async (req, res) => {
-  //   res.send("Hello, Azure VM!");
+  res.send("Hello, Azure VM!");
+});
 
-  const username = req.query.username;
-  const password = req.query.password;
-  const pdfPath = req.query.pdfPath;
-  const usernameGitHub = req.query.usernameGitHub;
-  const endPoint = req.query.endPoint;
-
-  const result = await mainProcess(
-    username,
-    password,
-    pdfPath,
-    usernameGitHub,
-    endPoint
+app.post("/register", async (req, res) => {
+  res.send(
+    "This should be registration page, should get all details from req, return them as res with the id that was saved in the database."
   );
+});
 
-  res.send(`result is: ${result}`);
+app.get("/login", async (req, res) => {
+  res.send(
+    "This should be login page, should get all details (username + password) from req, return them as res with the id that was saved in the database."
+  );
 });
 
 // Start the server
