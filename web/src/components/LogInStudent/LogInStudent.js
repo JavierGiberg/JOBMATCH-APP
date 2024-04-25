@@ -21,7 +21,7 @@ const LogInStudent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch(
-      `http://localhost:8000/api/login?username=${username}&password=${password}&gitgubUsername=${githubUsername}`
+      `http://jobmatch-dns.israelcentral.cloudapp.azure.com:8000/api/login?username=${username}&password=${password}&gitgubUsername=${githubUsername}`
     )
       .then((res) => res.text())
       .then((data) => {
