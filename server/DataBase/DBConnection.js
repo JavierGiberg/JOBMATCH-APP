@@ -1,4 +1,4 @@
-const mysql = require("mysql2");
+const mysql = require("mysql");
 const fs = require("fs");
 const path = require("path");
 const certPath = path.join(__dirname, "/DigiCertGlobalRootCA.crt.pem");
