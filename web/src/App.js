@@ -1,7 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserContext } from "./components/context/ProdactContex";
-import { useNavigate } from "react-router-dom";
 import LogInStudent from "./components/LogInStudent/LogInStudent";
 import NavigateButton from "./components/NavigateButton/NavigateButton";
 function App() {
