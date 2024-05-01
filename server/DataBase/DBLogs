@@ -43,3 +43,13 @@ CREATE TABLE t_github_languages (
     FOREIGN KEY (student_id) REFERENCES t_student(id)
 );
 
+######################### 05/27/2024 Javier ##########################
+CREATE TABLE t_register (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    academic VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    githubUsername VARCHAR(255) NOT NULL UNIQUE,
+    iv VARCHAR(255) NOT NULL,  
+    encryptedData VARCHAR(255) NOT NULL 
+);
+

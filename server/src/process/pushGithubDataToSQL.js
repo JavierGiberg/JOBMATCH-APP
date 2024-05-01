@@ -37,7 +37,7 @@ async function pushGithubDataToSQL(userInfo, summary) {
   } catch (error) {
     console.error("Failed to insert data:", error);
   } finally {
-    dbConnection.end(); // Close the connection for process Module!!!
+    // לבדוק מה אני הולך לעשות כאן!!!
   }
 }
 
