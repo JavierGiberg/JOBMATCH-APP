@@ -1,9 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const https = require("https");
-const fs = require("fs");
 const path = require("path");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 8000;
 
 const registerStudents = require("../register/registerStudents");
@@ -15,23 +14,19 @@ var studentId = "";
 app.use(cors());
 app.use(express.json()); // Enable JSON body parsing
 
-// app.use("/", (req, res, next) => {
-//   res.send("Hello from SSL server");
-// });
+const API_SERVICE_URL =
+  "http://jobmatch.israelcentral.cloudapp.azure.com/secret";
 
-// const sslServer = https.createServer(
-//   {
-//     key: fs.readFileSync(path.join(__dirname, "../../certificate/key.pem")),
-//     cert: fs.readFileSync(path.join(__dirname, "../../certificate/cert.pem")),
-//   },
-//   app
-// );
+app.use(
+  "/api",
+  createProxyMiddleware({
+    // target: API_SERVICE_URL,
+    target: "http://localhost:8000/",
+    changeOrigin: true,
+  })
+);
 
-// sslServer.listen(8000, () => {
-//   console.log("Secure Server is running on port 8000");
-// });
-
-app.get("/api/registerStudents", async (req, res) => {
+app.get("/registerStudents", async (req, res) => {
   const academic = req.query.academic;
   const username = req.query.username;
   const password = req.query.password;
@@ -63,7 +58,7 @@ app.get("/api/registerStudents", async (req, res) => {
   }
 });
 
-app.get("/api/studentSemiProfile", async (req, res) => {
+app.get("/studentSemiProfile", async (req, res) => {
   try {
     const studentId = req.query.studentId;
     console.log("call to studentSemiProfile api id:" + studentId);
@@ -73,10 +68,10 @@ app.get("/api/studentSemiProfile", async (req, res) => {
     console.log("error in studentSemiProfile", error);
   }
 });
-app.get("/api/app-register", async (req, res) => {
-  const username = req.quuery.username;
-  const password = req.quuery.password;
-  const email = req.quuery.email;
+app.get("/app-register", async (req, res) => {
+  const username = req.query.username;
+  const password = req.query.password;
+  const email = req.query.email;
   console.log("Register-App call");
   res.send(`username: ${username} , password: ${password} , email: ${email}`);
 });
