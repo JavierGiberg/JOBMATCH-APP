@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-const { createProxyMiddleware } = require("http-proxy-middleware");
+// const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 8000;
 
 const registerStudents = require("../register/registerStudents");
@@ -14,19 +14,19 @@ var studentId = "";
 app.use(cors());
 app.use(express.json()); // Enable JSON body parsing
 
-const API_SERVICE_URL =
-  "http://jobmatch.israelcentral.cloudapp.azure.com/secret";
+// const API_SERVICE_URL =
+//   "http://jobmatch.israelcentral.cloudapp.azure.com/secret";
 
-app.use(
-  "/api",
-  createProxyMiddleware({
-    // target: API_SERVICE_URL,
-    target: "http://localhost:8000/",
-    changeOrigin: true,
-  })
-);
+// app.use(
+//   "/api",
+//   createProxyMiddleware({
+//     // target: API_SERVICE_URL,
+//     target: "http://localhost:8000/",
+//     changeOrigin: true,
+//   })
+// );
 
-app.get("/registerStudents", async (req, res) => {
+app.get("/api/registerStudents", async (req, res) => {
   const academic = req.query.academic;
   const username = req.query.username;
   const password = req.query.password;
@@ -37,7 +37,7 @@ app.get("/registerStudents", async (req, res) => {
     "registerStudents",
     academic,
     username,
-    password,
+    "*********",
     githubUsername,
     email
   );
@@ -58,7 +58,7 @@ app.get("/registerStudents", async (req, res) => {
   }
 });
 
-app.get("/studentSemiProfile", async (req, res) => {
+app.get("/api/studentSemiProfile", async (req, res) => {
   try {
     const studentId = req.query.studentId;
     console.log("call to studentSemiProfile api id:" + studentId);
@@ -68,7 +68,7 @@ app.get("/studentSemiProfile", async (req, res) => {
     console.log("error in studentSemiProfile", error);
   }
 });
-app.get("/app-register", async (req, res) => {
+app.get("/api/app-register", async (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
   const email = req.query.email;
