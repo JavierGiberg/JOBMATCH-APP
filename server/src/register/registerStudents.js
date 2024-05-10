@@ -4,7 +4,7 @@ const dbConnection = Database.getInstance();
 const util = require("util");
 const query = util.promisify(dbConnection.query).bind(dbConnection);
 
-const Register = async (
+const registerStudents = async (
   academic,
   username,
   password,
@@ -45,4 +45,4 @@ const Register = async (
   }
 };
 
-module.exports = Register;
+module.exports = registerStudents;
