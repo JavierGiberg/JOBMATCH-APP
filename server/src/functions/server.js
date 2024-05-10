@@ -2,9 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 8000;
-
+const https = require("https");
+const fs = require("fs");
 const registerStudents = require("../register/registerStudents");
 const { mainProcess } = require("../process/mainProcess");
 const { PullSemiProfile } = require("../process/PullSemiProfile");
@@ -13,6 +13,20 @@ var studentId = "";
 
 app.use(cors());
 app.use(express.json()); // Enable JSON body parsing
+
+const sslServer = https.createServer(
+  {
+    key: fs.readFileSync(path.join(__dirname, "../../certificate", "key.pem")),
+    cert: fs.readFileSync(
+      path.join(__dirname, "../../certificate", "cert.pem")
+    ),
+  },
+  app
+);
+
+app.get("/testApi", async (req, res) => {
+  res.send("API is running");
+});
 
 // const API_SERVICE_URL =
 //   "http://jobmatch.israelcentral.cloudapp.azure.com/secret";
@@ -76,6 +90,6 @@ app.get("/api/app-register", async (req, res) => {
   res.send(`username: ${username} , password: ${password} , email: ${email}`);
 });
 
-app.listen(port, () => {
+sslServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
