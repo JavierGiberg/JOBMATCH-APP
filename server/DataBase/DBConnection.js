@@ -26,7 +26,7 @@ const connection = mysql.createConnection({
 //   ssl: {
 //     ca: fs.readFileSync(certPath),
 //   },
-//});
+// });
 
 connection.connect((err) => {
   if (err) {
