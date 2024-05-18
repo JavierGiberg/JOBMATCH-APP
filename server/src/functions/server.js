@@ -3,44 +3,29 @@ const cors = require("cors");
 const app = express();
 const path = require("path");
 const port = process.env.PORT || 8000;
-const https = require("https");
-const fs = require("fs");
 const registerStudents = require("../register/registerStudents");
 const { mainProcess } = require("../process/mainProcess");
 const { PullSemiProfile } = require("../process/PullSemiProfile");
+const bodyParser = require("body-parser");
+const { bcrypt } = require("bcrypt");
 
 var studentId = "";
 
+app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json()); // Enable JSON body parsing
 
-const sslServer = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, "../../certificate", "key.pem")),
-    cert: fs.readFileSync(
-      path.join(__dirname, "../../certificate", "cert.pem")
-    ),
-  },
-  app
-);
+//--------------------------------------------------------------------------------
 
-app.get("/testApi", async (req, res) => {
-  res.send("API is running");
+app.get("/api/testApi", async (req, res) => {
+  console.log("testApi call!!");
+  res.send("result from server API is running");
 });
 
-// const API_SERVICE_URL =
-//   "http://jobmatch.israelcentral.cloudapp.azure.com/secret";
-
-// app.use(
-//   "/api",
-//   createProxyMiddleware({
-//     // target: API_SERVICE_URL,
-//     target: "http://localhost:8000/",
-//     changeOrigin: true,
-//   })
-// );
-
+//--------------------------------------------------------------------------------
 app.get("/api/registerStudents", async (req, res) => {
+  console.log("registerStudents call");
+
   const academic = req.query.academic;
   const username = req.query.username;
   const password = req.query.password;
@@ -72,7 +57,9 @@ app.get("/api/registerStudents", async (req, res) => {
   }
 });
 
+//--------------------------------------------------------------------------------
 app.get("/api/studentSemiProfile", async (req, res) => {
+  console.log("studentSemiProfile call");
   try {
     const studentId = req.query.studentId;
     console.log("call to studentSemiProfile api id:" + studentId);
@@ -82,14 +69,36 @@ app.get("/api/studentSemiProfile", async (req, res) => {
     console.log("error in studentSemiProfile", error);
   }
 });
-app.get("/api/app-register", async (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
-  const email = req.query.email;
-  console.log("Register-App call");
-  res.send(`username: ${username} , password: ${password} , email: ${email}`);
+
+//--------------------------------------------------------------------------------
+const { register } = require("../register/register");
+app.post("/api/register", register);
+
+//--------------------------------------------------------------------------------
+const { login } = require("../register/login");
+app.post("/api/login", login);
+
+//--------------------------------------------------------------------------------
+const jwt = require("jsonwebtoken");
+const secret = process.env.JWT_TOKEN_LOGIN;
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, secret, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+app.get("/api/token-validation", authenticateToken, (req, res) => {
+  res.json({ message: "This is protected data", user: req.user });
 });
 
-sslServer.listen(port, () => {
+//--------------------------------------------------------------------------------
+
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
