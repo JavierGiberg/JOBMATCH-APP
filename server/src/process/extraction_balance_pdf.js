@@ -35,7 +35,7 @@ const extraction_balance_pdf = async (pdfPath) => {
       };
       courses.push(course);
     }
-  });
+  }); // server\src\downloads_balance\Jango117grades.pdf
   pushAcademicDataToSQL(studentInfo, courses);
   console.log("push Academic Data To SQL DONE!");
   try {

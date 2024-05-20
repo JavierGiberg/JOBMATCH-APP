@@ -2,9 +2,10 @@
   "name": "jobmatch-app",
   "version": "1.0.0",
   "description": "",
+  "main": "server/src/functions/server.js",
   "scripts": {
     "start": "node server/src/functions/server.js",
-    "test": "echo \"No tests yet...\""
+    "dev": "nodemon server/src/functions/server.js"
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
@@ -25,6 +26,5 @@
     "puppeteer-core": "^22.6.5",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-recaptcha": "^3.6.8"
-  },
-  "main": "server/src/functions/*.js"
+  }
 }

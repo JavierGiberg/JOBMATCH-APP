@@ -14,8 +14,19 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
 
   // module 2
   console.log("module 2 START!");
-  const nameOfFile = "server\\src\\downloads_balance\\" + "Jango117grades.pdf"; // path.basename(PdfFilefullPath);
-  const { studentInfo, courses } = await extraction_balance_pdf(nameOfFile);
+  const nameOfFile = path.basename(PdfFilefullPath);
+  console.log(nameOfFile);
+  const relativePathToPdf = path.join(
+    "server",
+    "src",
+    "downloads_balance",
+    nameOfFile
+  );
+  console.log(relativePathToPdf);
+
+  const { studentInfo, courses } = await extraction_balance_pdf(
+    relativePathToPdf
+  );
 
   // module 3
   console.log("module 3 START!");
