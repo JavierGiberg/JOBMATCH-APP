@@ -24,7 +24,7 @@ app.get("/api/testApi", async (req, res) => {
 
 //--------------------------------------------------------------------------------
 app.get("/api/registerStudents", async (req, res) => {
-  console.log("registerStudents call");
+  console.log("registerStudents  call");
 
   const academic = req.query.academic;
   const username = req.query.username;
