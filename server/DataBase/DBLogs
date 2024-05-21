@@ -3,7 +3,6 @@
 
 ######################### 10/04/2024 Javier ##########################
 
-// create two first table for student data //
 
 CREATE TABLE t_student (
 id VARCHAR(10) PRIMARY KEY,

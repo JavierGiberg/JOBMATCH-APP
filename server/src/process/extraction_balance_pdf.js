@@ -3,7 +3,7 @@ const pdf = require("pdf-parse");
 const { pushAcademicDataToSQL } = require("./pushAcademicDataToSQL");
 
 const extraction_balance_pdf = async (pdfPath) => {
-  const dataBuffer = fs.readFileSync(pdfPath);
+  const dataBuffer = fs.readFileSync(`../downloads_balance/${pdfPath}`);
   const data = await pdf(dataBuffer);
 
   console.log("start extraction studentInfo");
@@ -35,12 +35,12 @@ const extraction_balance_pdf = async (pdfPath) => {
       };
       courses.push(course);
     }
-  }); // server\src\downloads_balance\Jango117grades.pdf
+  });
   pushAcademicDataToSQL(studentInfo, courses);
   console.log("push Academic Data To SQL DONE!");
   try {
-    fs.unlinkSync(pdfPath);
-    console.log(pdfPath + " as deleted");
+    fs.unlinkSync(`../downloads_balance/${pdfPath}`);
+    console.log(`../downloads_balance/${pdfPath} as deleted`);
   } catch (err) {
     console.error(err);
   }
