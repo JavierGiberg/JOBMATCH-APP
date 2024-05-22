@@ -8,6 +8,7 @@ const { mainProcess } = require("../process/mainProcess");
 const { PullSemiProfile } = require("../process/PullSemiProfile");
 const bodyParser = require("body-parser");
 const { bcrypt } = require("bcrypt");
+const { mainAlgo } = require("../matchAlgorithm/mainAlgo");
 
 var studentId = "";
 
@@ -98,6 +99,22 @@ app.get("/api/token-validation", authenticateToken, (req, res) => {
 });
 
 //--------------------------------------------------------------------------------
+//http://localhost:8000/api/mainAlgo?degree=B.Sc&major=%D7%90
+app.get("/api/mainAlgo", async (req, res) => {
+  try {
+    const degree = req.query.degree;
+    const major = req.query.major;
+
+    if (!degree || !major) {
+      return res.status(400).send("Missing degree or major parameter");
+    }
+
+    const data = await mainAlgo(degree, major);
+  } catch (error) {
+    console.error("Error handling request:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
