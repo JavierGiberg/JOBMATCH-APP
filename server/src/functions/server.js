@@ -115,7 +115,14 @@ app.get("/api/mainAlgo", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
+//--------------------------------------------------------------------------------
+const { averageCalculation } = require("../process/averageCalculation");
+app.get("/api/averageCalculation", async (req, res) => {
+  console.log("averageCalculation call");
+  const studentId = req.query.studentId;
+  averageCalculation(studentId);
+});
+//--------------------------------------------------------------------------------
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
