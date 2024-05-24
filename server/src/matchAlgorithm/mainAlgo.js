@@ -9,3 +9,4 @@ const mainAlgo = async (degree, major) => {
 };
 
 module.exports = { mainAlgo };
+//test for Git
