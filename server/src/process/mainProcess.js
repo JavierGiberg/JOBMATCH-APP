@@ -1,6 +1,7 @@
 const { extraction_balance_pdf } = require("./extraction_balance_pdf");
 const { scrapeGitHubData } = require("./scrapeGitHubData");
 const { scrapePdfSapirCollege } = require("./scrapePdfSapirCollege");
+const { averageCalculation } = require("./averageCalculation");
 const path = require("path");
 
 async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
@@ -35,6 +36,9 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
     usernameGitHub
   );
 
+  // module 4
+  console.log("module 4 START!");
+  averageCalculation(studentInfo.id);
   return studentInfo.id;
 }
 module.exports = { mainProcess };

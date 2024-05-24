@@ -62,3 +62,12 @@ CREATE TABLE t_users (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+######################### 24/05/2024 Javier ##########################
+
+CREATE TABLE t_gpa (
+  id VARCHAR(10) PRIMARY KEY,
+  programming FLOAT,
+  algorithm FLOAT,
+  cyber FLOAT,
+  math FLOAT
+);
