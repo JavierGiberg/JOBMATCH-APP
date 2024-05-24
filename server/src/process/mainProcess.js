@@ -39,6 +39,7 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
   // module 4
   console.log("module 4 START!");
   averageCalculation(studentInfo.id);
+  console.log("mainProcess DONE!");
   return studentInfo.id;
 }
 module.exports = { mainProcess };

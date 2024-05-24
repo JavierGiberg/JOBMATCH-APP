@@ -101,6 +101,7 @@ app.get("/api/token-validation", authenticateToken, (req, res) => {
 //--------------------------------------------------------------------------------
 //http://localhost:8000/api/mainAlgo?degree=B.Sc&major=%D7%90
 app.get("/api/mainAlgo", async (req, res) => {
+  //add after done debug -> authenticateToken
   try {
     const degree = req.query.degree;
     const major = req.query.major;
