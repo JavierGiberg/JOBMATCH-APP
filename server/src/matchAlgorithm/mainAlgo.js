@@ -1,11 +1,21 @@
 const { getIDFromDB } = require("./getIDFromDB");
 const { getGpaFromDB } = require("./getGpaFromDB");
+const { ratingFinScore } = require("./ratingFinScore");
 
-const mainAlgo = async (degree, major) => {
+const mainAlgo = async (degree, major, preferences) => {
+  console.log("JOBMATCH Algorithm Start!");
+
+  console.log("getIDFromDB Start!");
   const studentIds = await getIDFromDB(degree, major);
 
-  const StudentsArray = await getGpaFromDB(studentIds, degree, major);
-  console.log(StudentsArray);
+  console.log("getGpaFromDB Start!");
+  const StudentsBeforeRating = await getGpaFromDB(studentIds, degree, major);
+
+  console.log("ratingFinScore Start!");
+  const Students = await ratingFinScore(StudentsBeforeRating, preferences);
+
+  console.log("JOBMATCH Algorithm DONE!");
+  console.log(Students);
 };
 
 module.exports = { mainAlgo };
