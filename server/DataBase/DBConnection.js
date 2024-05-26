@@ -15,26 +15,19 @@ const connection = mysql.createConnection({
   password: process.env.LOCAL_DB_PASS,
   database: process.env.LOCAL_DB_NAME,
 });
+
 //Azure DB
 // const connection = mysql.createConnection({
 //   connectionLimit: 10,
-//   host: process.env.LOCAL_DB_HOST,
-//   user: process.env.LOCAL_DB_USER,
-//   password: process.env.LOCAL_DB_PASS,
-//   database: process.env.LOCAL_DB_NAME,
+//   host: process.env.PRODUCT_DB_HOST,
+//   user: process.env.PRODUCT_DB_USER,
+//   password: process.env.PRODUCT_DB_PASS,
+//   database: process.env.PRODUCT_DB_NAME,
+//   port: 3306,
+//   ssl: {
+//     ca: fs.readFileSync(certPath),
+//   },
 // });
-//Azure DB
-const connection = mysql.createConnection({
-  connectionLimit: 10,
-  host: process.env.PRODUCT_DB_HOST,
-  user: process.env.PRODUCT_DB_USER,
-  password: process.env.PRODUCT_DB_PASS,
-  database: process.env.PRODUCT_DB_NAME,
-  port: 3306,
-  ssl: {
-    ca: fs.readFileSync(certPath),
-  },
-});
 
 connection.connect((err) => {
   if (err) {
