@@ -7,7 +7,15 @@ require("dotenv").config({
   path: require("path").join(__dirname, "../../.env"),
 });
 let instance = null;
-//Local DB
+//Local DB /
+const connection = mysql.createConnection({
+  connectionLimit: 10,
+  host: process.env.LOCAL_DB_HOST,
+  user: process.env.LOCAL_DB_USER,
+  password: process.env.LOCAL_DB_PASS,
+  database: process.env.LOCAL_DB_NAME,
+});
+//Azure DB
 // const connection = mysql.createConnection({
 //   connectionLimit: 10,
 //   host: process.env.LOCAL_DB_HOST,
