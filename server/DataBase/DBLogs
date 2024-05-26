@@ -1,7 +1,7 @@
 # DataBase Note
 
 
-######################### 04/10/2024 Javier ##########################
+######################### 10/04/2024 Javier ##########################
 
 // create two first table for student data //
 
@@ -24,7 +24,7 @@ course_name VARCHAR(100),
 grade VARCHAR(50),
 FOREIGN KEY (student_id) REFERENCES t_student(id)
 );
-######################### 04/17/2024 Javier ##########################
+######################### 17/04/2024 Javier ##########################
 
 CREATE TABLE t_github_info (
     id VARCHAR(10) PRIMARY KEY,
@@ -43,7 +43,7 @@ CREATE TABLE t_github_languages (
     FOREIGN KEY (student_id) REFERENCES t_student(id)
 );
 
-######################### 05/27/2024 Javier ##########################
+######################### 27/04/2024 Javier ##########################
 CREATE TABLE t_register (
     id INT AUTO_INCREMENT PRIMARY KEY,
     academic VARCHAR(255) NOT NULL,
@@ -53,3 +53,21 @@ CREATE TABLE t_register (
     encryptedData VARCHAR(255) NOT NULL 
 );
 
+
+######################### 18/05/2024 Javier ##########################
+
+CREATE TABLE t_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+######################### 24/05/2024 Javier ##########################
+
+CREATE TABLE t_gpa (
+  id VARCHAR(10) PRIMARY KEY,
+  programming FLOAT,
+  algorithm FLOAT,
+  cyber FLOAT,
+  math FLOAT
+);

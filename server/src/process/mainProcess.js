@@ -1,6 +1,7 @@
 const { extraction_balance_pdf } = require("./extraction_balance_pdf");
 const { scrapeGitHubData } = require("./scrapeGitHubData");
 const { scrapePdfSapirCollege } = require("./scrapePdfSapirCollege");
+const { averageCalculation } = require("./averageCalculation");
 const path = require("path");
 
 async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
@@ -14,8 +15,19 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
 
   // module 2
   console.log("module 2 START!");
-  const nameOfFile = "server\\src\\downloads_balance\\" + "Jango117grades.pdf"; // path.basename(PdfFilefullPath);
-  const { studentInfo, courses } = await extraction_balance_pdf(nameOfFile);
+  const nameOfFile = path.basename(PdfFilefullPath);
+  console.log(nameOfFile);
+  const relativePathToPdf = path.join(
+    "server",
+    "src",
+    "downloads_balance",
+    nameOfFile
+  );
+  console.log(relativePathToPdf);
+
+  const { studentInfo, courses } = await extraction_balance_pdf(
+    relativePathToPdf
+  );
 
   // module 3
   console.log("module 3 START!");
@@ -24,6 +36,10 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
     usernameGitHub
   );
 
+  // module 4
+  console.log("module 4 START!");
+  averageCalculation(studentInfo.id);
+  console.log("mainProcess DONE!");
   return studentInfo.id;
 }
 module.exports = { mainProcess };

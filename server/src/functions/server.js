@@ -1,72 +1,129 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const https = require("https");
-const fs = require("fs");
 const path = require("path");
-// const port = process.env.PORT || 8000;
-
-const Register = require("../register/Register");
+const port = process.env.PORT || 8000;
+const registerStudents = require("../register/registerStudents");
 const { mainProcess } = require("../process/mainProcess");
 const { PullSemiProfile } = require("../process/PullSemiProfile");
+const bodyParser = require("body-parser");
+const { bcrypt } = require("bcrypt");
+const { mainAlgo } = require("../matchAlgorithm/mainAlgo");
 
 var studentId = "";
 
+app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json()); // Enable JSON body parsing
 
-app.use("/", (req, res, next) => {
-  res.send("Hello from SSL server");
+//--------------------------------------------------------------------------------
+
+app.get("/api/testApi", async (req, res) => {
+  console.log("testApi call!!");
+  res.send("result from server API is running");
 });
 
-const sslServer = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, "../../certificate/key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "../../certificate/cert.pem")),
-  },
-  app
-);
+//--------------------------------------------------------------------------------
+app.get("/api/registerStudents", async (req, res) => {
+  console.log("registerStudents  call");
 
-sslServer.listen(3443, () => {
-  console.log("Secure Server is running on port 3443");
+  const academic = req.query.academic;
+  const username = req.query.username;
+  const password = req.query.password;
+  const githubUsername = req.query.githubUsername;
+  const email = req.query.email;
+
+  console.log(
+    "registerStudents",
+    academic,
+    username,
+    "*********",
+    githubUsername,
+    email
+  );
+  try {
+    const result = await registerStudents(
+      academic,
+      username,
+      password,
+      githubUsername,
+      email
+    );
+    if (result === "success") {
+      studentId = await mainProcess(username, password, githubUsername);
+    }
+    await res.send({ result, studentId });
+  } catch (error) {
+    console.log("error in RegisterStudents");
+  }
 });
 
-// app.get("/api/register", async (req, res) => {
-//   const academic = req.query.academic;
-//   const username = req.query.username;
-//   const password = req.query.password;
-//   const githubUsername = req.query.githubUsername;
-//   const email = req.query.email;
+//--------------------------------------------------------------------------------
+app.get("/api/studentSemiProfile", async (req, res) => {
+  console.log("studentSemiProfile call");
+  try {
+    const studentId = req.query.studentId;
+    console.log("call to studentSemiProfile api id:" + studentId);
+    const Data = await PullSemiProfile(studentId);
+    res.send(Data);
+  } catch (error) {
+    console.log("error in studentSemiProfile", error);
+  }
+});
 
-//   console.log("register", academic, username, password, githubUsername, email);
-//   try {
-//     const result = await Register(
-//       academic,
-//       username,
-//       password,
-//       githubUsername,
-//       email
-//     );
-//     if (result === "success") {
-//       studentId = await mainProcess(username, password, githubUsername);
-//     }
-//     await res.send({ result, studentId });
-//   } catch (error) {
-//     console.log("error in register");
-//   }
-// });
+//--------------------------------------------------------------------------------
+const { register } = require("../register/register");
+app.post("/api/register", register);
 
-// app.get("/api/studentSemiProfile", async (req, res) => {
-//   try {
-//     const studentId = req.query.studentId;
-//     console.log("call to studentSemiProfile api id:" + studentId);
-//     const Data = await PullSemiProfile(studentId);
-//     res.send(Data);
-//   } catch (error) {
-//     console.log("error in studentSemiProfile", error);
-//   }
-// });
+//--------------------------------------------------------------------------------
+const { login } = require("../register/login");
+app.post("/api/login", login);
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+//--------------------------------------------------------------------------------
+const jwt = require("jsonwebtoken");
+const secret = process.env.JWT_TOKEN_LOGIN;
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, secret, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+app.get("/api/token-validation", authenticateToken, (req, res) => {
+  res.json({ message: "This is protected data", user: req.user });
+});
+
+//--------------------------------------------------------------------------------
+//http://localhost:8000/api/mainAlgo?degree=B.Sc&major=%D7%90
+app.get("/api/mainAlgo", async (req, res) => {
+  //add after done debug -> authenticateToken
+  try {
+    const degree = req.query.degree;
+    const major = req.query.major;
+
+    if (!degree || !major) {
+      return res.status(400).send("Missing degree or major parameter");
+    }
+
+    const data = await mainAlgo(degree, major);
+  } catch (error) {
+    console.error("Error handling request:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+//--------------------------------------------------------------------------------
+const { averageCalculation } = require("../process/averageCalculation");
+app.get("/api/averageCalculation", async (req, res) => {
+  console.log("averageCalculation call");
+  const studentId = req.query.studentId;
+  averageCalculation(studentId);
+});
+//--------------------------------------------------------------------------------
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
