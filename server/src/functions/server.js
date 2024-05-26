@@ -100,17 +100,27 @@ app.get("/api/token-validation", authenticateToken, (req, res) => {
 
 //--------------------------------------------------------------------------------
 //http://localhost:8000/api/mainAlgo?degree=B.Sc&major=%D7%90
-app.get("/api/mainAlgo", async (req, res) => {
+
+app.get("/api/mainAlgo", authenticateToken, async (req, res) => {
   //add after done debug -> authenticateToken
   try {
-    const degree = req.query.degree;
-    const major = req.query.major;
-
-    if (!degree || !major) {
+    const preferences = {
+      gpa: {
+        programming: Number(req.query.programming),
+        algorithm: Number(req.query.algorithm),
+        cyber: Number(req.query.cyber),
+        math: Number(req.query.math),
+      },
+      languages: req.query.languages,
+    };
+    const degree = "B.Sc";
+    const major = req.query.major.trim().substring(0, 1);
+    if (!degree || !major || !preferences) {
       return res.status(400).send("Missing degree or major parameter");
     }
 
-    const data = await mainAlgo(degree, major);
+    const data = await mainAlgo(degree, major, preferences);
+    res.json(data);
   } catch (error) {
     console.error("Error handling request:", error);
     res.status(500).send("Internal Server Error");

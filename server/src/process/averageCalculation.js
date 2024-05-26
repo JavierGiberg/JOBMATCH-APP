@@ -57,6 +57,7 @@ const averageCalculation = async (studentId) => {
   pushGpaToSQL(studentId, programming.gpa, algorithm.gpa, cyber.gpa, math.gpa);
   console.log("pushGpaToSQL DONE!");
 };
+
 const getCategory = (courseName) => {
   for (const category in categoriesJson) {
     for (const keyword of categoriesJson[category]) {

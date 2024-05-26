@@ -15,7 +15,7 @@ const getGpaFromDB = async (studentIds, degree, major) => {
         dbConnection.query(
           `SELECT t_gpa.*, t_student.name
           FROM t_gpa
-          JOIN t_student ON t_gpa.id = t_student.id;`,
+          JOIN t_student ON t_gpa.id = t_student.id AND t_student.id = ?;`,
           [student.id],
           (error, results) => {
             if (error) {
