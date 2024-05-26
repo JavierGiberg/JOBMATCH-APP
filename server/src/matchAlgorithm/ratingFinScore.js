@@ -1,9 +1,3 @@
-//
-//
-// const preferences = {
-//     gpa: { programming: 1, algorithm: 2, cyber: 3, math: 4 },
-//     languages: ["JavaScript", "C#", "CSS"],
-//   };
 const { getGitLanguasges } = require("./getGitLanguasges");
 
 const ratingFinScore = async (StudentsBeforeRating, preferences) => {

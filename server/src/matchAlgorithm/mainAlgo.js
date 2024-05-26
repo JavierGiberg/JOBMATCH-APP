@@ -15,8 +15,7 @@ const mainAlgo = async (degree, major, preferences) => {
   const Students = await ratingFinScore(StudentsBeforeRating, preferences);
 
   console.log("JOBMATCH Algorithm DONE!");
-  console.log(Students);
+  return Students;
 };
 
 module.exports = { mainAlgo };
-//test for Git
