@@ -51,8 +51,8 @@ app.get("/api/registerStudents", async (req, res) => {
     );
     if (result === "success") {
       studentId = await mainProcess(username, password, githubUsername);
+      await res.send({ result, studentId });
     }
-    await res.send({ result, studentId });
   } catch (error) {
     console.log("error in RegisterStudents");
   }
@@ -111,7 +111,8 @@ app.get("/api/mainAlgo", authenticateToken, async (req, res) => {
         cyber: Number(req.query.cyber),
         math: Number(req.query.math),
       },
-      languages: req.query.languages,
+      languages: req.query.languages ? req.query.languages.split(",") : [],
+      order: req.query.order ? req.query.order.split(",") : [],
     };
     const degree = "B.Sc";
     const major = req.query.major.trim().substring(0, 1);
@@ -129,9 +130,13 @@ app.get("/api/mainAlgo", authenticateToken, async (req, res) => {
 //--------------------------------------------------------------------------------
 const { averageCalculation } = require("../process/averageCalculation");
 app.get("/api/averageCalculation", async (req, res) => {
-  console.log("averageCalculation call");
-  const studentId = req.query.studentId;
-  averageCalculation(studentId);
+  try {
+    console.log("averageCalculation call");
+    const studentId = req.query.studentId;
+    averageCalculation(studentId);
+  } catch (error) {
+    console.error("Error handling request:", error);
+  }
 });
 //--------------------------------------------------------------------------------
 app.listen(port, () => {

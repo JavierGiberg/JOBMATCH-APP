@@ -1,27 +1,58 @@
 const { getGitLanguasges } = require("./getGitLanguasges");
 
-const ratingFinScore = async (StudentsBeforeRating, preferences) => {
-  const score = [0, 1, 0.8, 0.6, 0.4];
+const calculateWeightedScore = (score, weight) => {
+  return score * weight;
+};
 
-  const programmingRating = score[preferences.gpa.programming];
-  const algorithmRating = score[preferences.gpa.algorithm];
-  const cyberRating = score[preferences.gpa.cyber];
-  const mathRating = score[preferences.gpa.math];
+const getGithubProjectScore = (projectsCount) => {
+  if (projectsCount >= 1 && projectsCount <= 5) return 1; // Beginner
+  if (projectsCount >= 6 && projectsCount <= 14) return 4; // Intermediate
+  if (projectsCount >= 15 && projectsCount <= 19) return 6; // Pro
+  if (projectsCount >= 20) return 9; // Master
+  return 0;
+};
+
+const clamp = (value, min, max) => {
+  return Math.min(Math.max(value, min), max);
+};
+
+const ratingFinScore = async (StudentsBeforeRating, preferences) => {
+  const defaultWeights = {
+    programming: 0.35,
+    algorithm: 0.2,
+    cyber: 0.15,
+    math: 0.1,
+  };
+
+  const dynamicWeights = {};
+  const weights = [0.35, 0.2, 0.15, 0.1]; 
+
+  preferences.order.forEach((area, index) => {
+    dynamicWeights[area] = weights[index];
+  });
 
   for (const student of StudentsBeforeRating) {
     const languages = await getGitLanguasges(student.id);
-    student.finScore += student.programming * programmingRating;
-    student.finScore += student.algorithm * algorithmRating;
-    student.finScore += student.cyber * cyberRating;
-    student.finScore += student.math * mathRating;
-    student.finScore = parseInt(student.finScore);
+
+    student.finScore = 0;
+
+    const programmingScore = calculateWeightedScore(student.programming, dynamicWeights.programming || defaultWeights.programming);
+    const algorithmScore = calculateWeightedScore(student.algorithm, dynamicWeights.algorithm || defaultWeights.algorithm);
+    const cyberScore = calculateWeightedScore(student.cyber, dynamicWeights.cyber || defaultWeights.cyber);
+    const mathScore = calculateWeightedScore(student.math, dynamicWeights.math || defaultWeights.math);
+
+    student.finScore = programmingScore + algorithmScore + cyberScore + mathScore;
 
     for (const language of preferences.languages) {
       const matchedLanguage = languages.find((l) => l.language === language);
       if (matchedLanguage) {
-        student.finScore += 2 * matchedLanguage.projects_count;
+        const projectScore = getGithubProjectScore(matchedLanguage.projects_count);
+        student.finScore += projectScore;
       }
     }
+
+    // Clamp the final score to be within 0 to 100
+    student.finScore = clamp(student.finScore, 0, 100);
   }
 
   return StudentsBeforeRating;
