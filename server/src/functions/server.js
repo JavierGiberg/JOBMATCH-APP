@@ -111,7 +111,8 @@ app.get("/api/mainAlgo", authenticateToken, async (req, res) => {
         cyber: Number(req.query.cyber),
         math: Number(req.query.math),
       },
-      languages: req.query.languages,
+      languages: req.query.languages ? req.query.languages.split(',') : [],
+      order: req.query.order ? req.query.order.split(',') : [],
     };
     const degree = "B.Sc";
     const major = req.query.major.trim().substring(0, 1);
