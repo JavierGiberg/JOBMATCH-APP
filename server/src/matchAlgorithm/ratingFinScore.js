@@ -25,7 +25,7 @@ const ratingFinScore = async (StudentsBeforeRating, preferences) => {
   };
 
   const dynamicWeights = {};
-  const weights = [0.35, 0.2, 0.15, 0.1]; 
+  const weights = [0.35, 0.2, 0.15, 0.1];
 
   preferences.order.forEach((area, index) => {
     dynamicWeights[area] = weights[index];
@@ -36,17 +36,33 @@ const ratingFinScore = async (StudentsBeforeRating, preferences) => {
 
     student.finScore = 0;
 
-    const programmingScore = calculateWeightedScore(student.programming, dynamicWeights.programming || defaultWeights.programming);
-    const algorithmScore = calculateWeightedScore(student.algorithm, dynamicWeights.algorithm || defaultWeights.algorithm);
-    const cyberScore = calculateWeightedScore(student.cyber, dynamicWeights.cyber || defaultWeights.cyber);
-    const mathScore = calculateWeightedScore(student.math, dynamicWeights.math || defaultWeights.math);
+    const programmingScore = calculateWeightedScore(
+      student.programming,
+      dynamicWeights.programming || defaultWeights.programming
+    );
+    const algorithmScore = calculateWeightedScore(
+      student.algorithm,
+      dynamicWeights.algorithm || defaultWeights.algorithm
+    );
+    const cyberScore = calculateWeightedScore(
+      student.cyber,
+      dynamicWeights.cyber || defaultWeights.cyber
+    );
+    const mathScore = calculateWeightedScore(
+      student.math,
+      dynamicWeights.math || defaultWeights.math
+    );
 
-    student.finScore = programmingScore + algorithmScore + cyberScore + mathScore;
+    student.finScore =
+      programmingScore + algorithmScore + cyberScore + mathScore;
+    student.finScore = parseFloat(student.finScore.toFixed(2));
 
     for (const language of preferences.languages) {
       const matchedLanguage = languages.find((l) => l.language === language);
       if (matchedLanguage) {
-        const projectScore = getGithubProjectScore(matchedLanguage.projects_count);
+        const projectScore = getGithubProjectScore(
+          matchedLanguage.projects_count
+        );
         student.finScore += projectScore;
       }
     }
