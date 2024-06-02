@@ -139,6 +139,26 @@ app.get("/api/averageCalculation", async (req, res) => {
   }
 });
 //--------------------------------------------------------------------------------
+
+const { understandQuestion } = require("../chat/understandQuestion");
+const { answer } = require("../chat/answer");
+app.post("/api/messages", async (req, res) => {
+  const ids = req.query.ids.split(",");
+  const { message } = req.body;
+  const questionType = understandQuestion(message);
+
+  try {
+    const returnMessage = await answer(questionType, ids, message);
+    res.send({ user: "Bot", message: returnMessage });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ error: "An error occurred while processing the request" });
+  }
+});
+
+//--------------------------------------------------------------------------------
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
