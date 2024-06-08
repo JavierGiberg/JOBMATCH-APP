@@ -20,7 +20,6 @@ app.use(express.json()); // Enable JSON body parsing
 
 app.get("/api/testApi", async (req, res) => {
   console.log("testApi call!!");
-  res.send("result from server API is running");
 });
 
 //--------------------------------------------------------------------------------
@@ -158,6 +157,13 @@ app.post("/api/messages", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------
+const {
+  mainSimilarStudents,
+} = require("../similarStudents/mainSimilarStudents");
+app.get("/api/mainSimilarStudents", async (req, res) => {
+  const matrix = await mainSimilarStudents();
+  res.send(matrix);
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
