@@ -1,10 +1,23 @@
 const axios = require('axios');
 
-// Replace with your GitHub token
 const GITHUB_TOKEN = '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';
 const HEADERS = { 'Authorization': `token ${GITHUB_TOKEN}` };
 
-// Function to get repositories of a user
+const DEPENDENCY_CONFIG = {
+    JavaScript: { files: ['package.json'], dirs: [''] },
+    TypeScript: { files: ['package.json', 'tsconfig.json'], dirs: [''] },
+    Python: { files: ['requirements.txt'], dirs: ['', 'src', 'app'] },
+    Java: { files: ['pom.xml', 'build.gradle','.classpath'], dirs: ['', 'src'] },
+    'C#': { files: ['packages.config', '*.csproj', 'manifest.json'], dirs: ['', 'src', 'Packages'] },
+    C: { files: ['CMakeLists.txt'], dirs: [''] },
+    'C++': { files: ['CMakeLists.txt'], dirs: [''] },
+    Html: { files: ['package.json', 'index.html'], dirs: [''] },
+    Css: { files: ['package.json', 'style.css'], dirs: [''] },  
+    Ruby: { files: ['Gemfile'], dirs: [''] },
+    Shell: { files: ['*.sh'], dirs: [''] },
+};
+
+
 async function getStudentRepositories(username) {
     const url = `https://api.github.com/users/${username}/repos`;
     try {
@@ -16,7 +29,6 @@ async function getStudentRepositories(username) {
     }
 }
 
-// Function to get languages used in a repository
 async function getLanguages(repoOwner, repoName) {
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/languages`;
     try {
@@ -28,7 +40,6 @@ async function getLanguages(repoOwner, repoName) {
     }
 }
 
-// Function to list files in a repository directory
 async function listFiles(repoOwner, repoName, dirPath = '') {
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dirPath}`;
     try {
@@ -42,7 +53,6 @@ async function listFiles(repoOwner, repoName, dirPath = '') {
     }
 }
 
-// Function to get the content of a file in a repository
 async function getFileContent(repoOwner, repoName, filePath) {
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
     try {
@@ -52,70 +62,90 @@ async function getFileContent(repoOwner, repoName, filePath) {
             return fileContent;
         }
     } catch (error) {
-        console.error(`Error fetching file content for ${filePath} in ${repoName}:`, error.message);
-        return null;
+        throw new Error(`Error fetching file content for ${filePath} in ${repoName}: ${error.message}`);
     }
 }
 
-// Function to determine the dependency file based on language
-function determineDependencyFiles(languages) {
-    const files = [];
-    if (languages.JavaScript) files.push('package.json');
-    if (languages.Python) files.push('requirements.txt');
-    if (languages.Java) files.push('pom.xml', 'build.gradle');
-    if (languages.Ruby) files.push('Gemfile');
-    if (languages.PHP) files.push('composer.json');
-    if (languages.Go) files.push('go.mod');
-    if (languages['C#']) files.push('packages.config', '*.csproj'); // Add .csproj for .NET Core
-    if (languages.C++) files.push('CMakeLists.txt');
-    return files;
-}
+async function searchForDependencyFiles(repoOwner, repoName, languageConfig) {
+    const dependencies = [];
+    const { files, dirs } = languageConfig;
 
-// Function to search for dependency files in repository
-async function searchForDependencyFile(repoOwner, repoName, files) {
-    const directories = ['', 'src', 'app', 'backend', 'frontend', 'lib', 'Assets', 'Packages']; // Common directories to search in
-    for (const dir of directories) {
+    const searchTasks = [];
+    for (const dir of dirs) {
         for (const file of files) {
             const path = dir ? `${dir}/${file}` : file;
-            const content = await getFileContent(repoOwner, repoName, path);
-            if (content) {
-                return { file, content };
-            }
+            searchTasks.push(
+                getFileContent(repoOwner, repoName, path)
+                    .then(content => {
+                        dependencies.push({ file: path, content });
+                    })
+                    .catch(error => {
+                        if (!error.message.includes('404')) {
+                            console.error(`Error fetching file: ${path} in ${repoName} - ${error.message}`);
+                        }
+                    })
+            );
         }
     }
-    return null;
+
+    await Promise.allSettled(searchTasks);
+    return dependencies;
 }
 
-// Main function to fetch repositories, languages, and file content
-async function main(studentUsername) {
+function getMainLanguage(languages) {
+    let mainLanguage = null;
+    let maxBytes = 0;
+    for (const [language, bytes] of Object.entries(languages)) {
+        if (bytes > maxBytes) {
+            mainLanguage = language;
+            maxBytes = bytes;
+        }
+    }
+    return mainLanguage;
+}
+
+async function getDependencies(studentUsername) {
     const studentRepos = await getStudentRepositories(studentUsername);
-    for (const repo of studentRepos) {
+    const allDependencies = [];
+
+    const repoTasks = studentRepos.map(async (repo) => {
         const repoName = repo.name;
 
-        // Get language statistics
         const languages = await getLanguages(studentUsername, repoName);
         console.log(`Repository: ${repoName} - Languages:`, languages);
 
-        // List files in the root directory to debug structure
-        const rootFiles = await listFiles(studentUsername, repoName);
-        console.log(`Repository: ${repoName} - Root files:`, rootFiles);
-
-        // Determine the appropriate dependency files
-        const dependencyFiles = determineDependencyFiles(languages);
-        if (dependencyFiles.length > 0) {
-            // Search for the dependency files in common directories
-            const result = await searchForDependencyFile(studentUsername, repoName, dependencyFiles);
-            if (result) {
-                const content = result.file.endsWith('.json') ? JSON.stringify(JSON.parse(result.content), null, 2) : result.content;
-                console.log(`Repository: ${repoName} - ${result.file}:`, content);
-            } else {
-                console.log(`Repository: ${repoName} - No recognized dependency file found in common directories.`);
-            }
-        } else {
-            console.log(`Repository: ${repoName} - No recognized dependency file found for the detected languages.`);
+        const mainLanguage = getMainLanguage(languages);
+        if (!mainLanguage || !DEPENDENCY_CONFIG[mainLanguage]) {
+            console.log(`Repository: ${repoName} - No recognized main language or no dependency configuration available.`);
+            return;
         }
+
+        const languageConfig = DEPENDENCY_CONFIG[mainLanguage];
+
+        const dependencies = await searchForDependencyFiles(studentUsername, repoName, languageConfig);
+        if (dependencies.length > 0) {
+            allDependencies.push(...dependencies);
+        } else {
+            console.log(`Repository: ${repoName} - No recognized dependency file found in specified directories.`);
+        }
+    });
+
+    await Promise.all(repoTasks);
+    return allDependencies;
+}
+
+async function main() {
+    const studentUsername = 'JavierGiberg'; // Replace with the actual GitHub username
+    try {
+        const dependencies = await getDependencies(studentUsername);
+        console.log('Dependencies:', JSON.stringify(dependencies, null, 2));
+    } catch (error) {
+        console.error('Error in main function:', error);
     }
 }
 
-// Replace 'student_username' with the actual GitHub username
-main('RazButbul');
+if (require.main === module) {
+    main().catch(error => console.error('Error in main function:', error));
+}
+
+module.exports = { getDependencies };
