@@ -9,6 +9,11 @@ const { PullSemiProfile } = require("../process/PullSemiProfile");
 const bodyParser = require("body-parser");
 const { bcrypt } = require("bcrypt");
 const { mainAlgo } = require("../matchAlgorithm/mainAlgo");
+const crypto = require("crypto");
+const { getLinkedInAccessToken, getLinkedInUserProfile } = require("./../process/linkedinJobs");
+const { pushClassificationsToSQL } = require("../process/pushClassificationsToSQL");
+const { getClassificationsFromSQL } = require("../process/getClassificationsFromSQL");
+const Database = require('../../DataBase/DBConnection');
 
 var studentId = "";
 
@@ -163,6 +168,73 @@ const {
 app.get("/api/mainSimilarStudents", async (req, res) => {
   const matrix = await mainSimilarStudents();
   res.send(matrix);
+});
+
+// Push Classifications API
+app.post("/api/pushClassifications", async (req, res) => {
+  const { username } = req.body;
+  try {
+    await pushClassificationsToSQL(username);
+    res.status(200).send('Classifications pushed successfully');
+  } catch (error) {
+    console.error('Error pushing classifications:', error);
+    res.status(500).send('Error pushing classifications');
+  }
+});
+
+// Get Classifications API
+app.get("/api/getClassifications", async (req, res) => {
+  const { username } = req.query;
+  try {
+    const classifications = await getClassificationsFromSQL(username);
+    res.status(200).json(classifications);
+  } catch (error) {
+    console.error('Error fetching classifications:', error);
+    res.status(500).send('Error fetching classifications');
+  }
+});
+app.post("/api/pushAndGetClassifications", async (req, res) => {
+  const { username } = req.body;
+  const connection = Database.getInstance();
+  try {
+    // Push classifications to SQL
+    await pushClassificationsToSQL(connection, username);
+
+    // Get classifications from SQL
+    const classifications = await getClassificationsFromSQL(connection, username);
+
+    res.status(200).json(classifications);
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).send('Error processing request');
+  }
+});
+
+function generateState(length) {
+  return crypto.randomBytes(length).toString('hex');
+}
+
+app.get("/auth/linkedin", (req, res) => {
+  const linkedinClientId = process.env.LINKEDIN_CLIENT_ID;
+  const linkedinRedirectUri = process.env.LINKEDIN_REDIRECT_URI;
+  const state = generateState(16); // Generate a unique state string
+  const scope = 'r_liteprofile r_emailaddress r_fullprofile';
+
+  const authorizationUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${linkedinClientId}&redirect_uri=${encodeURIComponent(linkedinRedirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`;
+  res.redirect(authorizationUrl);
+});
+
+app.get("/auth/linkedin/callback", async (req, res) => {
+  const code = req.query.code;
+  const state = req.query.state;
+
+  try {
+    const accessToken = await getLinkedInAccessToken(code);
+    const { profile, positions } = await getLinkedInUserProfile(accessToken);
+    res.json({ profile, positions });
+  } catch (error) {
+    res.status(500).send('Error during LinkedIn OAuth flow');
+  }
 });
 
 app.listen(port, () => {

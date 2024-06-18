@@ -27,6 +27,27 @@ const PullSemiProfile = async (studentId) => {
       new Set(githubLanguages.map(JSON.stringify))
     ).map(JSON.parse);
 
+    // Count the number of projects in each category
+    const projectsCount = uniqueGithubLanguages.reduce((acc, curr) => {
+      switch (curr.language.toLowerCase()) {
+        case 'programming':
+          acc.programming += curr.projects_count;
+          break;
+        case 'algorithm':
+          acc.algorithm += curr.projects_count;
+          break;
+        case 'cyber':
+          acc.cyber += curr.projects_count;
+          break;
+        case 'math':
+          acc.math += curr.projects_count;
+          break;
+        default:
+          break;
+      }
+      return acc;
+    }, { programming: 0, algorithm: 0, cyber: 0, math: 0 });
+
     // Construct the final object
     const Data = {
       student: studentInfo[0], // assuming the query returns an array
@@ -40,6 +61,7 @@ const PullSemiProfile = async (studentId) => {
         public_repos: githubInfo[0].public_repos,
       },
       github_languages: uniqueGithubLanguages,
+      projects_count: projectsCount,
     };
 
     return Data;
@@ -60,4 +82,5 @@ function queryDatabase(query, params) {
     });
   });
 }
+
 module.exports = { PullSemiProfile };

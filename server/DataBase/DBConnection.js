@@ -6,6 +6,8 @@ const certPath = path.join(__dirname, "/DigiCertGlobalRootCA.crt.pem");
 require("dotenv").config({
   path: require("path").join(__dirname, "../../.env"),
 });
+
+
 let instance = null;
 //Local DB /
 const connection = mysql.createConnection({
@@ -15,7 +17,7 @@ const connection = mysql.createConnection({
   password: process.env.LOCAL_DB_PASS,
   database: process.env.LOCAL_DB_NAME,
 });
-
+console.log(connection.host);
 //Azure DB
 // const connection = mysql.createConnection({
 //   connectionLimit: 10,

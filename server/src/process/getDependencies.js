@@ -17,7 +17,6 @@ const DEPENDENCY_CONFIG = {
     Shell: { files: ['*.sh'], dirs: [''] },
 };
 
-
 async function getStudentRepositories(username) {
     const url = `https://api.github.com/users/${username}/repos`;
     try {
@@ -70,25 +69,26 @@ async function searchForDependencyFiles(repoOwner, repoName, languageConfig) {
     const dependencies = [];
     const { files, dirs } = languageConfig;
 
-    const searchTasks = [];
+    const foundFiles = new Set(); // To track found file types
+
     for (const dir of dirs) {
         for (const file of files) {
+            if (foundFiles.has(file)) {
+                continue; // Skip if this file type is already found
+            }
             const path = dir ? `${dir}/${file}` : file;
-            searchTasks.push(
-                getFileContent(repoOwner, repoName, path)
-                    .then(content => {
-                        dependencies.push({ file: path, content });
-                    })
-                    .catch(error => {
-                        if (!error.message.includes('404')) {
-                            console.error(`Error fetching file: ${path} in ${repoName} - ${error.message}`);
-                        }
-                    })
-            );
+            try {
+                const content = await getFileContent(repoOwner, repoName, path);
+                dependencies.push({ file: path, content });
+                foundFiles.add(file); // Mark this file type as found
+            } catch (error) {
+                if (!error.message.includes('404')) {
+                    console.error(`Error fetching file: ${path} in ${repoName} - ${error.message}`);
+                }
+            }
         }
     }
 
-    await Promise.allSettled(searchTasks);
     return dependencies;
 }
 
@@ -124,7 +124,7 @@ async function getDependencies(studentUsername) {
 
         const dependencies = await searchForDependencyFiles(studentUsername, repoName, languageConfig);
         if (dependencies.length > 0) {
-            allDependencies.push(...dependencies);
+            allDependencies.push({ projectName: repoName, dependencies });
         } else {
             console.log(`Repository: ${repoName} - No recognized dependency file found in specified directories.`);
         }
