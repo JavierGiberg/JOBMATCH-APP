@@ -52,8 +52,11 @@ async function mainProcess(usernameSapir, passwordSapir, usernameGitHub) {
     return; // Exit the function if this module fails
   }
 
-  // module 4
   console.log("module 4 START!");
+
+
+  // module 4
+  console.log("module 5 START!");
   try {
     await averageCalculation(studentInfo.id); // Add await if this is an async function
     console.log("mainProcess DONE!");
